@@ -43,13 +43,30 @@ public class TrieNode {
 	
 	public boolean lookup(String word, String scratch){
 		if(scratch.length() == 1)
-			if(children.get(scratch.charAt(0)).getValue() != null && children.get(scratch.charAt(0)).getValue().equals(word))
-				return true;
-			else 
-				return false;
+			if(children.containsKey(scratch.charAt(0))){
+				if(children.get(scratch.charAt(0)).getValue() != null && children.get(scratch.charAt(0)).getValue().equals(word))
+					return true;
+				else 
+					return false;
+			} else
+				return false;			
 		else if(!children.containsKey(scratch.charAt(0)))
 			return false;
 		else
 			return children.get(scratch.charAt(0)).lookup(word, scratch.substring(1));
 	}	
+	
+	public void populateCompounds(String word, ArrayList<String> compounds){
+		if(word.length() == 0) 
+			return;
+		else{ 
+			if(children.containsKey(word.charAt(0))){
+				if(children.get(word.charAt(0)).getValue() != null)
+					compounds.add(children.get(word.charAt(0)).getValue());
+				children.get(word.charAt(0)).populateCompounds(word.substring(1), compounds);
+			} else
+				return;
+		}
+	}
+	
 }
